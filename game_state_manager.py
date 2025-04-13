@@ -1,4 +1,4 @@
-#游戏状态管理
+#游戏状态管理器
 import json
 
 class GameStateManager:
@@ -6,7 +6,7 @@ class GameStateManager:
         self.state = {
             "player_name": "Hero",
             "player_stats": {"hp": 100, "max_hp": 100, "mp": 50, "max_mp": 50},
-            "player_inventory": ["", ""],
+            "player_inventory": ["断剑", "破旧的铠甲"],
             "player_location": {"map_id": "world", "x": 0, "y": 0},
             "current_map_data": None, # Will hold data for map drawing
             "current_turn": 0,
