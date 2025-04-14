@@ -2,7 +2,9 @@
 
 from pkg.plugin.context import register, handler, llm_func, BasePlugin, APIHost, EventContext
 from pkg.plugin.events import *  # 导入事件类
-from script_manager import ScriptManager  # 添加新的导入
+from script_manager import ScriptManager  # 导入剧本管理器类
+from character_manager import CharacterManager
+from game_state import GameState, GameStatus
 
 # 注册插件
 @register(name="Ai Team Running", description="Ai Team Running", version="0.1", author="Zzz3262")
@@ -10,10 +12,11 @@ class MyPlugin(BasePlugin):
 
     # 插件加载时触发
     def __init__(self, host: APIHost):
-        self.game_state = None
+        self.character_manager = CharacterManager()
+        self.game_state = GameState()
+        self.script_manager = ScriptManager()  # 初始化脚本管理器
         self.current_state = "idle"  # 可能的状态：idle, creating_characters
         self.player_list = []  # 存储报名玩家的QQ号
-        self.script_manager = ScriptManager()  # 初始化脚本管理器
 
     # 异步初始化
     async def initialize(self):
@@ -74,7 +77,9 @@ class MyPlugin(BasePlugin):
         if msg == "报名" and self.current_state == "creating_characters":
             if sender_qq not in self.player_list:  # 检查是否重复报名
                 self.player_list.append(sender_qq)  # 添加玩家到列表
-                await ctx.send_private_message(sender_qq, "Hello，欢迎参加跑团！请开始创建你的角色。")
+                await ctx.send_private_message(sender_qq, "Hello，欢迎参加跑团！请开始创建你的角色。") 
+                #按照角色创建流程发送私信
+                # 这里可以添加角色创建的具体流程，例如发送角色模板等
                 ctx.add_return("reply", [f"玩家 {sender_qq} 已报名成功！"])
             else:
                 ctx.add_return("reply", ["你已经报名过了！"])
